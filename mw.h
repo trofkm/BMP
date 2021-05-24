@@ -6,6 +6,12 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QGraphicsPixmapItem>
+#include "secondwindow.h"
+#include "mypicture.h"
+
+
+
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MW; }
@@ -18,12 +24,16 @@ class MW : public QMainWindow
 public:
     MW(QWidget *parent = nullptr);
     ~MW();
+    //static Bitmap*bmp;
+    static QString filename;
 
 private slots:
     void on_actionOpen_triggered();
+
+    void on_InverseColors_Btn_clicked();
 
 private:
     Ui::MW *ui;
     QString currentFile = "";
 };
-#endif // MW_H
+#endif  //MW_H
