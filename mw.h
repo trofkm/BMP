@@ -10,7 +10,8 @@
 #include "mypicture.h"
 
 
-
+Bitmap*bmp;
+QString filename;
 
 
 QT_BEGIN_NAMESPACE
@@ -24,8 +25,8 @@ class MW : public QMainWindow
 public:
     MW(QWidget *parent = nullptr);
     ~MW();
-    //static Bitmap*bmp;
-    static QString filename;
+
+
 
 private slots:
     void on_actionOpen_triggered();

@@ -17,11 +17,11 @@ MW::~MW()
 
 void MW::on_actionOpen_triggered()
 {
-    MW::filename = QFileDialog::getOpenFileName(this,"Open the file");//Получаем имя файла
-    ui->statusbar->showMessage(MW::filename);
+    filename = QFileDialog::getOpenFileName(this,"Open the file");//Get filename
+    ui->statusbar->showMessage(filename);
 
-    MW::bmp = new Bitmap(MW::filename.toStdString());
-    QImage image(MW::filename);
+    bmp = new Bitmap(filename.toStdString());
+    QImage image(filename);
     QGraphicsScene* scene = new QGraphicsScene;
     scene->addPixmap(QPixmap::fromImage(image));
     ui->PictureView->setScene(scene);
@@ -33,7 +33,7 @@ void MW::on_InverseColors_Btn_clicked()
 {
    // SecUi = new SecondWIndow(this);
     SecondWindow window;
-    window.setResolution(QString::number(MW::bmp->W())+"x"+QString::number(MW::bmp->H()));
+    window.setResolution(QString::number(bmp->W())+"x"+QString::number(bmp->H()));
     window.setModal(true);
     window.exec();
 
