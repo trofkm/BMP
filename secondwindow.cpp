@@ -19,8 +19,10 @@ SecondWindow::~SecondWindow()
 
 void SecondWindow::on_Inverse_btn_clicked()
 {
-    //Bitmap bmp();
-    bmp->InverseColors({ui->X1->text().toInt(),ui->Y1->text().toInt()},{ui->X2->text().toInt(),ui->Y2->text().toInt()});
-    //filename = "out.bmp";
+    if (mode==0)
+        bmp->InverseColors({ui->X1->text().toInt(),ui->Y1->text().toInt()},{ui->X2->text().toInt(),ui->Y2->text().toInt()});
+    else if(mode==1){
+        bmp->ToMonochrome({ui->X1->text().toInt(),ui->Y1->text().toInt()},{ui->X2->text().toInt(),ui->Y2->text().toInt()});
+    }
     this->close();
 }

@@ -17,7 +17,6 @@ public:
     ~SecondWindow();
     void setResolution(QString resolution);
 
-
 private slots:
 
     void on_Inverse_btn_clicked();

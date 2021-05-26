@@ -29,6 +29,8 @@ private slots:
 
     void on_InverseColors_Btn_clicked();
 
+    void on_ToMonochrome_btn_clicked();
+
 private:
     Ui::MW *ui;
     QString currentFile = "";
