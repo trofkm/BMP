@@ -17,10 +17,10 @@ MW::~MW()
 
 void MW::on_actionOpen_triggered()
 {
-    filename = QFileDialog::getOpenFileName(this,"Open the file");//Get filename
+    QString filename = QFileDialog::getOpenFileName(this,"Open the file");//Get filename
     ui->statusbar->showMessage(filename);
 
-    bmp = new Bitmap(filename.toStdString());
+    bmp = std::make_unique<Bitmap>(filename.toStdString());
     QImage image(filename);
     QGraphicsScene* scene = new QGraphicsScene;
     scene->addPixmap(QPixmap::fromImage(image));
@@ -31,7 +31,7 @@ void MW::on_actionOpen_triggered()
 
 void MW::on_InverseColors_Btn_clicked()
 {
-   // SecUi = new SecondWIndow(this);
+
     SecondWindow window;
     window.setResolution(QString::number(bmp->W())+"x"+QString::number(bmp->H()));
     window.setModal(true);
@@ -39,7 +39,7 @@ void MW::on_InverseColors_Btn_clicked()
 
 
 
-   QImage image(filename);
+    QImage image("out.bmp");
     QGraphicsScene* scene = new QGraphicsScene;
     scene->addPixmap(QPixmap::fromImage(image));
     ui->PictureView->setScene(scene);

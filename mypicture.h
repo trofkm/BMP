@@ -59,6 +59,7 @@ public:
     ~Bitmap();
     unsigned int H();
     unsigned int W();
+    std::string getFilename();
     void ToMonochrome(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp") override;
     void InverseColors(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp") override;
     void DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, int count = 1, std::string nameTo = "out.bmp")override;
@@ -67,5 +68,7 @@ public:
     void AddBackground(Rgb color, int mode, std::string nameTo="out.bmp")override;
 
 };
+
+extern std::unique_ptr<Bitmap>bmp;
 
 #endif // MYPICTURE_H

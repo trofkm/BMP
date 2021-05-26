@@ -31,7 +31,9 @@ unsigned int Bitmap::H(){
 unsigned int Bitmap::W(){
     return this->picture.bih.width;
 }
-
+std::string Bitmap::getFilename(){
+    return pathFrom;
+}
 void Bitmap::ToMonochrome(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo)
 {
     FILE *to = fopen(nameTo.c_str(), "wb");
@@ -344,3 +346,4 @@ void Bitmap::IncreaseImage(int mode, std::string nameTo)
         }
         fclose(to);
     }
+    std::unique_ptr<Bitmap>bmp;

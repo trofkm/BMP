@@ -10,10 +10,6 @@
 #include "mypicture.h"
 
 
-Bitmap*bmp;
-QString filename;
-
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MW; }
 QT_END_NAMESPACE

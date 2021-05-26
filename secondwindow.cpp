@@ -21,6 +21,6 @@ void SecondWindow::on_Inverse_btn_clicked()
 {
     //Bitmap bmp();
     bmp->InverseColors({ui->X1->text().toInt(),ui->Y1->text().toInt()},{ui->X2->text().toInt(),ui->Y2->text().toInt()});
-    filename = "out.bmp";
+    //filename = "out.bmp";
     this->close();
 }
