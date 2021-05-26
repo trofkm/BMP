@@ -9,6 +9,7 @@ CONFIG += c++20
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    changeimage.cpp \
     main.cpp \
     mw.cpp \
     mypicture.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
     vectorwindow.cpp
 
 HEADERS += \
+    changeimage.h \
     mw.h \
     mypicture.h \
     pixeltable.h \
@@ -24,6 +26,7 @@ HEADERS += \
     vectorwindow.h
 
 FORMS += \
+    changeimage.ui \
     mw.ui \
     secondwindow.ui \
     vectorwindow.ui

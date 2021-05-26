@@ -24,7 +24,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
-       <number>74</number>
+       <number>10</number>
       </property>
       <item>
        <widget class="QPushButton" name="Vector_Btn">
@@ -44,6 +44,20 @@
        <widget class="QPushButton" name="ToMonochrome_btn">
         <property name="text">
          <string>Convert to monochrome</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="CutImage_btn">
+        <property name="text">
+         <string>Cut Image</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="IncreaseImage_btn">
+        <property name="text">
+         <string>Increase Image</string>
         </property>
        </widget>
       </item>

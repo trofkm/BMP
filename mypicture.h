@@ -10,12 +10,12 @@ protected:
 
 public:
     MyPicture(std::string name_);
-    virtual void ToMonochrome(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo) {}
-    virtual void DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, int count = 1, std::string nameTo = "out.bmp") {}
-    virtual void DrawLine(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, std::string nameTo = "out.bmp") {}
-    virtual void InverseColors(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp") {}
-    virtual void IncreaseImage(int mode, std::string nameTo){}
-    virtual void AddBackground(Rgb color, int mode, std::string nameTo="out.bmp"){}
+    virtual void ToMonochrome(std::pair<int, int> , std::pair<int, int> , std::string  = "out.bmp") {}
+    virtual void DrawVector(std::pair<int, int>, std::pair<int, int> , Rgb , int  = 1, std::string  = "out.bmp") {}
+    virtual void DrawLine(std::pair<int, int> , std::pair<int, int> , Rgb , std::string  = "out.bmp") {}
+    virtual void InverseColors(std::pair<int, int> , std::pair<int, int> , std::string  = "out.bmp") {}
+    virtual void IncreaseImage(int , std::string ="out.bmp"){}
+    virtual void AddBackground(Rgb , int , std::string ="out.bmp"){}
 };
 
 

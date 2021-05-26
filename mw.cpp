@@ -73,3 +73,33 @@ void MW::on_Vector_Btn_clicked()
     ui->PictureView->show();
 
 }
+
+void MW::on_CutImage_btn_clicked()
+{
+    mode = 0;
+    ChangeImage window;
+    window.setModal(true);
+    window.exec();
+
+    QImage image("out.bmp");
+    QGraphicsScene* scene = new QGraphicsScene;
+    scene->addPixmap(QPixmap::fromImage(image));
+    ui->PictureView->setScene(scene);
+    ui->PictureView->show();
+
+}
+
+void MW::on_IncreaseImage_btn_clicked()
+{
+    mode = 1;
+    ChangeImage window;
+    window.setModal(true);
+    window.exec();
+
+    QImage image("out.bmp");
+    QGraphicsScene* scene = new QGraphicsScene;
+    scene->addPixmap(QPixmap::fromImage(image));
+    ui->PictureView->setScene(scene);
+    ui->PictureView->show();
+
+}
