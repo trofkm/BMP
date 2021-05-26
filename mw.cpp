@@ -58,3 +58,12 @@ void MW::on_ToMonochrome_btn_clicked()
     ui->PictureView->setScene(scene);
     ui->PictureView->show();
 }
+
+void MW::on_Vector_Btn_clicked()
+{
+    VectorWindow window;
+    window.setResolution(QString::number(bmp->W())+"x"+QString::number(bmp->H()));
+    window.setModal(true);
+    window.exec();
+
+}

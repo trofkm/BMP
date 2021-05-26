@@ -2,7 +2,7 @@
 #define SECONDWINDOW_H
 
 #include <QDialog>
-#include "mw.h"
+//#include "mw.h"
 
 namespace Ui {
 class SecondWindow;

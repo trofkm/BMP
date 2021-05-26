@@ -8,7 +8,7 @@
 #include <QGraphicsPixmapItem>
 #include "secondwindow.h"
 #include "mypicture.h"
-
+#include "vectorwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MW; }
@@ -30,6 +30,8 @@ private slots:
     void on_InverseColors_Btn_clicked();
 
     void on_ToMonochrome_btn_clicked();
+
+    void on_Vector_Btn_clicked();
 
 private:
     Ui::MW *ui;

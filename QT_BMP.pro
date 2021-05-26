@@ -13,17 +13,20 @@ SOURCES += \
     mw.cpp \
     mypicture.cpp \
     pixeltable.cpp \
-    secondwindow.cpp
+    secondwindow.cpp \
+    vectorwindow.cpp
 
 HEADERS += \
     mw.h \
     mypicture.h \
     pixeltable.h \
-    secondwindow.h
+    secondwindow.h \
+    vectorwindow.h
 
 FORMS += \
     mw.ui \
-    secondwindow.ui
+    secondwindow.ui \
+    vectorwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
