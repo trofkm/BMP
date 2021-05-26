@@ -348,3 +348,4 @@ void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)
 }
 std::unique_ptr<Bitmap>bmp;
 int mode;
+Rgb color;

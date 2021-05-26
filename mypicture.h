@@ -71,5 +71,6 @@ public:
 
 extern std::unique_ptr<Bitmap>bmp;
 extern int mode;
+extern Rgb color;
 
 #endif // MYPICTURE_H

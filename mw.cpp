@@ -66,4 +66,10 @@ void MW::on_Vector_Btn_clicked()
     window.setModal(true);
     window.exec();
 
+    QImage image("out.bmp");
+    QGraphicsScene* scene = new QGraphicsScene;
+    scene->addPixmap(QPixmap::fromImage(image));
+    ui->PictureView->setScene(scene);
+    ui->PictureView->show();
+
 }
