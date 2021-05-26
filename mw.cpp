@@ -128,4 +128,6 @@ void MW::on_IncreaseImage_btn_clicked()
 
 void MW::on_actionSave_as_triggered()
 {
+    //QString filename = QFileDialog::getExistingDirectory(this,"Change path to save");
+    QString filename =QFileDialog::getSaveFileName(this);
 }
