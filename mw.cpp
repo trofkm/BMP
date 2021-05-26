@@ -37,8 +37,6 @@ void MW::on_InverseColors_Btn_clicked()
     window.setModal(true);
     window.exec();
 
-
-
     QImage image("out.bmp");
     QGraphicsScene* scene = new QGraphicsScene;
     scene->addPixmap(QPixmap::fromImage(image));

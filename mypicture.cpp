@@ -85,9 +85,9 @@ void Bitmap::InverseColors(std::pair<int, int> p1, std::pair<int, int> p2, std::
 
         for (int k = yFirstPixel; k < yLastPixel + 1; ++k)
         {
-                 (*tbl)[k][i].r = 255-(*tbl)[k][i].r;
-                 (*tbl)[k][i].g = 255-(*tbl)[k][i].g;
-                 (*tbl)[k][i].b = 255-(*tbl)[k][i].b;
+            (*tbl)[k][i].r = 255-(*tbl)[k][i].r;
+            (*tbl)[k][i].g = 255-(*tbl)[k][i].g;
+            (*tbl)[k][i].b = 255-(*tbl)[k][i].b;
         }
     }
     for (size_t i = 0; i < picture.bih.height; ++i)
@@ -99,46 +99,46 @@ void Bitmap::InverseColors(std::pair<int, int> p1, std::pair<int, int> p2, std::
 }
 
 void Bitmap::DrawLine(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, std::string nameTo)
+{
+    FILE *to = fopen(nameTo.c_str(), "wb");
+    fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+    fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+    unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+    int x1 = p1.first;
+    int x2 = p2.first;
+    int y1 = p1.second;
+    int y2 = p2.second;
+
+    const int deltaX = abs(x2 - x1);
+    const int deltaY = abs(y2 - y1);
+    const int signX = x1 < x2 ? 1 : -1;
+    const int signY = y1 < y2 ? 1 : -1;
+    int error = deltaX - deltaY;
+    if (y2 >= 0 && y2 < this->picture.bih.height && x2 >= 0 && x2 < this->picture.bih.width)
+        (*tbl)[y2][x2] = color;
+    while (x1 != x2 || y1 != y2)
     {
-        FILE *to = fopen(nameTo.c_str(), "wb");
-        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
-        fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-        int x1 = p1.first;
-        int x2 = p2.first;
-        int y1 = p1.second;
-        int y2 = p2.second;
-
-        const int deltaX = abs(x2 - x1);
-        const int deltaY = abs(y2 - y1);
-        const int signX = x1 < x2 ? 1 : -1;
-        const int signY = y1 < y2 ? 1 : -1;
-        int error = deltaX - deltaY;
-        if (y2 >= 0 && y2 < this->picture.bih.height && x2 >= 0 && x2 < this->picture.bih.width)
-            (*tbl)[y2][x2] = color;
-        while (x1 != x2 || y1 != y2)
+        if (y1 >= 0 && y1 < this->picture.bih.height && x1 >= 0 && x1 < this->picture.bih.width)
+            (*tbl)[y1][x1] = color;
+        int error2 = error * 2;
+        if (error2 > -deltaY)
         {
-            if (y1 >= 0 && y1 < this->picture.bih.height && x1 >= 0 && x1 < this->picture.bih.width)
-                (*tbl)[y1][x1] = color;
-            int error2 = error * 2;
-            if (error2 > -deltaY)
-            {
-                error -= deltaY;
-                x1 += signX;
-            }
-            if (error2 < deltaX)
-            {
-                error += deltaX;
-                y1 += signY;
-            }
+            error -= deltaY;
+            x1 += signX;
         }
-
-        for (int i = 0; i < picture.bih.height; ++i)
+        if (error2 < deltaX)
         {
-            fwrite((*tbl)[i], 1, w, to);
+            error += deltaX;
+            y1 += signY;
         }
-        fclose(to);
     }
+
+    for (size_t i = 0; i < picture.bih.height; ++i)
+    {
+        fwrite((*tbl)[i], 1, w, to);
+    }
+    fclose(to);
+}
 
 
 
@@ -165,185 +165,185 @@ void Bitmap::DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb colo
     }
 }
 void Bitmap::IncreaseImage(int mode, std::string nameTo)
+{
+    FILE *to = fopen(nameTo.c_str(), "wb");
+    if (mode == 1)
     {
-        FILE *to = fopen(nameTo.c_str(), "wb");
-        if (mode == 1)
-        {
-            this->picture.bih.width = this->picture.bih.width / 2;
-            this->picture.bih.height = this->picture.bih.height / 2;
-            fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
-            fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-            unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-            for (size_t i = 0; i < picture.bih.height; ++i)
-            {
-                fwrite((*tbl)[i], 1, w, to);
-            }
-            fclose(to);
-        }
-        else if (mode == 2)
-        {
-            unsigned int heighUntil = this->picture.bih.height;
-            this->picture.bih.width = this->picture.bih.width / 2;
-            this->picture.bih.height = this->picture.bih.height / 2;
-            fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
-            fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-            unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-            for (size_t i = this->picture.bih.height; i < heighUntil; ++i)
-            {
-                fwrite((*tbl)[i], 1, w, to);
-            }
-            fclose(to);
-        }
-        else if (mode == 3)
-        {
-            unsigned int heighUntil = this->picture.bih.height;
-            this->picture.bih.width = this->picture.bih.width / 2;
-            this->picture.bih.height = this->picture.bih.height / 2;
-            fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
-            fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-            unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-            for (size_t y = this->picture.bih.height; y < heighUntil; ++y)
-            {
-                for (int i = 0; i < this->picture.bih.width; ++i)
-                {
-                    (*tbl)[y][i] = (*tbl)[y][i + this->picture.bih.width];
-                }
-            }
-
-            for (size_t i = this->picture.bih.height; i < heighUntil; ++i)
-            {
-                fwrite((*tbl)[i], 1, w, to);
-            }
-            fclose(to);
-        }
-        else if (mode == 4)
-        {
-            this->picture.bih.width = this->picture.bih.width / 2;
-            this->picture.bih.height = this->picture.bih.height / 2;
-            fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
-            fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-            unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-            for (size_t y = 0; y < this->picture.bih.height; ++y)
-            {
-                for (int i = 0; i < this->picture.bih.width; ++i)
-                {
-                    (*tbl)[y][i] = (*tbl)[y][i + this->picture.bih.width];
-                }
-            }
-
-            for (size_t i = 0; i < this->picture.bih.height; ++i)
-            {
-                fwrite((*tbl)[i], 1, w, to);
-            }
-            fclose(to);
-        }
-        else if (mode == 5)
-        {
-            //unsigned int heighUntil = this->picture.bih.height;
-            this->picture.bih.width = this->picture.bih.width / 2;
-            this->picture.bih.height = this->picture.bih.height / 2;
-            fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
-            fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-            unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-            for (size_t y = this->picture.bih.height / 2; y < (this->picture.bih.height + this->picture.bih.height / 2); ++y)
-            {
-                for (int i = 0; i < (this->picture.bih.width + this->picture.bih.width / 2); ++i)
-                {
-                    (*tbl)[y][i] = (*tbl)[y][i + this->picture.bih.width / 2];
-                }
-            }
-
-            for (size_t i = this->picture.bih.height / 2; i < (this->picture.bih.height + this->picture.bih.height / 2); ++i)
-            {
-                fwrite((*tbl)[i], 1, w, to);
-            }
-            fclose(to);
-        }
-    }
-    void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)
-    {
-        FILE *to = fopen(nameTo.c_str(), "wb");
-        this->picture.bih.width = this->picture.bih.width * 2;
-        this->picture.bih.height = this->picture.bih.height * 2;
+        this->picture.bih.width = this->picture.bih.width / 2;
+        this->picture.bih.height = this->picture.bih.height / 2;
         fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
         fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-        auto Bigtbl = std::make_unique<PixelTable>(this->picture.bih.height, this->picture.bih.width);
         unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-        if (mode == 5)
+        for (size_t i = 0; i < picture.bih.height; ++i)
         {
-            for (int y = 0; y < this->picture.bih.height; ++y)
-            {
-                for (size_t i = 0; i < this->picture.bih.width; ++i)
-                {
-
-                    if (y >= this->picture.bih.height / 4 && i >= this->picture.bih.width / 4 && y < this->picture.bih.height / 4 + this->picture.bih.height / 2 && i < this->picture.bih.width / 2 + this->picture.bih.width / 4)
-                        (*Bigtbl)[y][i] = (*tbl)[y - (int)picture.bih.height / 4][i - picture.bih.width / 4];
-                    else
-                        (*Bigtbl)[y][i] = color;
-                }
-            }
-        }
-        else if (mode == 1)
-        {
-            for (int y = 0; y < this->picture.bih.height; ++y)
-            {
-                for (size_t i = 0; i < this->picture.bih.width; ++i)
-                {
-
-                    if (y < this->picture.bih.height / 2 && i < this->picture.bih.width / 2)
-                        (*Bigtbl)[y][i] = (*tbl)[y][i];
-                    else
-                        (*Bigtbl)[y][i] = color;
-                }
-            }
-        }
-        else if (mode == 2)
-        {
-            for (int y = 0; y < this->picture.bih.height; ++y)
-            {
-                for (size_t i = 0; i < this->picture.bih.width; ++i)
-                {
-
-                    if (y >= this->picture.bih.height / 2 && i < this->picture.bih.width / 2)
-                        (*Bigtbl)[y][i] = (*tbl)[y - this->picture.bih.height / 2][i];
-                    else
-                        (*Bigtbl)[y][i] = color;
-                }
-            }
-        }
-        else if (mode == 3)
-        {
-            for (int y = 0; y < this->picture.bih.height; ++y)
-            {
-                for (size_t i = 0; i < this->picture.bih.width; ++i)
-                {
-
-                    if (y >= this->picture.bih.height / 2 && i >= this->picture.bih.width / 2)
-                        (*Bigtbl)[y][i] = (*tbl)[y - this->picture.bih.height / 2][i - this->picture.bih.width / 2];
-                    else
-                        (*Bigtbl)[y][i] = color;
-                }
-            }
-        }
-        else if (mode == 4)
-        {
-            for (int y = 0; y < this->picture.bih.height; ++y)
-            {
-                for (size_t i = 0; i < this->picture.bih.width; ++i)
-                {
-
-                    if (i >= this->picture.bih.width / 2 && y < this->picture.bih.height / 2 )
-                        (*Bigtbl)[y][i] = (*tbl)[y ][i - picture.bih.width / 2];
-                    else
-                        (*Bigtbl)[y][i] = color;
-                }
-            }
-        }
-
-        for (int i = 0; i < this->picture.bih.height; ++i)
-        {
-            fwrite((*Bigtbl)[i], 1, w, to);
+            fwrite((*tbl)[i], 1, w, to);
         }
         fclose(to);
     }
-    std::unique_ptr<Bitmap>bmp;
+    else if (mode == 2)
+    {
+        unsigned int heighUntil = this->picture.bih.height;
+        this->picture.bih.width = this->picture.bih.width / 2;
+        this->picture.bih.height = this->picture.bih.height / 2;
+        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+        fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+        for (size_t i = this->picture.bih.height; i < heighUntil; ++i)
+        {
+            fwrite((*tbl)[i], 1, w, to);
+        }
+        fclose(to);
+    }
+    else if (mode == 3)
+    {
+        unsigned int heighUntil = this->picture.bih.height;
+        this->picture.bih.width = this->picture.bih.width / 2;
+        this->picture.bih.height = this->picture.bih.height / 2;
+        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+        fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+        for (size_t y = this->picture.bih.height; y < heighUntil; ++y)
+        {
+            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            {
+                (*tbl)[y][i] = (*tbl)[y][i + this->picture.bih.width];
+            }
+        }
+
+        for (size_t i = this->picture.bih.height; i < heighUntil; ++i)
+        {
+            fwrite((*tbl)[i], 1, w, to);
+        }
+        fclose(to);
+    }
+    else if (mode == 4)
+    {
+        this->picture.bih.width = this->picture.bih.width / 2;
+        this->picture.bih.height = this->picture.bih.height / 2;
+        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+        fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        {
+            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            {
+                (*tbl)[y][i] = (*tbl)[y][i + this->picture.bih.width];
+            }
+        }
+
+        for (size_t i = 0; i < this->picture.bih.height; ++i)
+        {
+            fwrite((*tbl)[i], 1, w, to);
+        }
+        fclose(to);
+    }
+    else if (mode == 5)
+    {
+        //unsigned int heighUntil = this->picture.bih.height;
+        this->picture.bih.width = this->picture.bih.width / 2;
+        this->picture.bih.height = this->picture.bih.height / 2;
+        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+        fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+        for (size_t y = this->picture.bih.height / 2; y < (this->picture.bih.height + this->picture.bih.height / 2); ++y)
+        {
+            for (size_t i = 0; i < (this->picture.bih.width + this->picture.bih.width / 2); ++i)
+            {
+                (*tbl)[y][i] = (*tbl)[y][i + this->picture.bih.width / 2];
+            }
+        }
+
+        for (size_t i = this->picture.bih.height / 2; i < (this->picture.bih.height + this->picture.bih.height / 2); ++i)
+        {
+            fwrite((*tbl)[i], 1, w, to);
+        }
+        fclose(to);
+    }
+}
+void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)
+{
+    FILE *to = fopen(nameTo.c_str(), "wb");
+    this->picture.bih.width = this->picture.bih.width * 2;
+    this->picture.bih.height = this->picture.bih.height * 2;
+    fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+    fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+    auto Bigtbl = std::make_unique<PixelTable>(this->picture.bih.height, this->picture.bih.width);
+    unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+    if (mode == 5)
+    {
+        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        {
+            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            {
+
+                if (y >= this->picture.bih.height / 4 && i >= this->picture.bih.width / 4 && y < this->picture.bih.height / 4 + this->picture.bih.height / 2 && i < this->picture.bih.width / 2 + this->picture.bih.width / 4)
+                    (*Bigtbl)[y][i] = (*tbl)[y - (int)picture.bih.height / 4][i - picture.bih.width / 4];
+                else
+                    (*Bigtbl)[y][i] = color;
+            }
+        }
+    }
+    else if (mode == 1)
+    {
+        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        {
+            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            {
+
+                if (y < this->picture.bih.height / 2 && i < this->picture.bih.width / 2)
+                    (*Bigtbl)[y][i] = (*tbl)[y][i];
+                else
+                    (*Bigtbl)[y][i] = color;
+            }
+        }
+    }
+    else if (mode == 2)
+    {
+        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        {
+            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            {
+
+                if (y >= this->picture.bih.height / 2 && i < this->picture.bih.width / 2)
+                    (*Bigtbl)[y][i] = (*tbl)[y - this->picture.bih.height / 2][i];
+                else
+                    (*Bigtbl)[y][i] = color;
+            }
+        }
+    }
+    else if (mode == 3)
+    {
+        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        {
+            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            {
+
+                if (y >= this->picture.bih.height / 2 && i >= this->picture.bih.width / 2)
+                    (*Bigtbl)[y][i] = (*tbl)[y - this->picture.bih.height / 2][i - this->picture.bih.width / 2];
+                else
+                    (*Bigtbl)[y][i] = color;
+            }
+        }
+    }
+    else if (mode == 4)
+    {
+        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        {
+            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            {
+
+                if (i >= this->picture.bih.width / 2 && y < this->picture.bih.height / 2 )
+                    (*Bigtbl)[y][i] = (*tbl)[y ][i - picture.bih.width / 2];
+                else
+                    (*Bigtbl)[y][i] = color;
+            }
+        }
+    }
+
+    for (size_t i = 0; i < this->picture.bih.height; ++i)
+    {
+        fwrite((*Bigtbl)[i], 1, w, to);
+    }
+    fclose(to);
+}
+std::unique_ptr<Bitmap>bmp;
