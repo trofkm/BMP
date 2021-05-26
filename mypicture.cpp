@@ -25,15 +25,20 @@ Bitmap::~Bitmap()
 {
 }
 
-unsigned int Bitmap::H(){
+unsigned int Bitmap::H()const{
     return this->picture.bih.height;
 }
-unsigned int Bitmap::W(){
+unsigned int Bitmap::W()const{
     return this->picture.bih.width;
 }
-std::string Bitmap::getFilename(){
+std::string Bitmap::getFilename()const{
     return pathFrom;
 }
+
+void Bitmap::setFilename(std::string newPath){
+    pathFrom = newPath;
+}
+
 void Bitmap::ToMonochrome(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo)
 {
     FILE *to = fopen(nameTo.c_str(), "wb");
@@ -143,23 +148,45 @@ void Bitmap::DrawLine(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color,
 
 
 void Bitmap::DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, int count, std::string nameTo){
+
+    DrawLine(p1, p2, color,nameTo);
+    if(count==1)
+        return;
+
+    int default1,default2;
     if (abs(p1.first - p2.first) <= (abs(p1.second - p2.second)))
     {
-
-        for (int i = 0; i < count; ++i)
+        default1 = p1.first;
+        default2 = p2.first;
+        for (int i = 0; i < count/2; ++i)
         {
             p1.first++;
             p2.first++;
             DrawLine(p1, p2, color,nameTo);
         }
+        p1.first = default1;
+        p2.first = default2;
+        for(int i = count/2;i<count;++i){
+            p1.first--;
+            p2.first--;
+            DrawLine(p1, p2, color,nameTo);
+        }
     }
     else
     {
-
-        for (int i = 0; i < count; ++i)
+        default1 = p1.second;
+        default2 = p2.second;
+        for (int i = 0; i < count/2; ++i)
         {
             p1.second++;
             p2.second++;
+            DrawLine(p1, p2, color,nameTo);
+        }
+        p1.second = default1;
+        p2.second = default2;
+        for(int i = count/2;i<count;++i){
+            p1.second--;
+            p2.second--;
             DrawLine(p1, p2, color,nameTo);
         }
     }
@@ -260,7 +287,7 @@ void Bitmap::IncreaseImage(int mode, std::string nameTo)
         fclose(to);
     }
 }
-void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)
+void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some errors when using this function more then once
 {
     FILE *to = fopen(nameTo.c_str(), "wb");
     this->picture.bih.width = this->picture.bih.width * 2;

@@ -30,5 +30,6 @@ void VectorWindow::on_color_btn_clicked()
 void VectorWindow::on_Inverse_btn_clicked()
 {
     bmp->DrawVector({ui->X1->text().toInt(),ui->Y1->text().toInt()},{ui->X2->text().toInt(),ui->Y2->text().toInt()},color,ui->LineWidth->text().toInt());
+    bmp->setFilename("out.bmp");
     this->close();
 }

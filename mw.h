@@ -39,8 +39,11 @@ private slots:
 
     void on_IncreaseImage_btn_clicked();
 
+
+    void on_actionSave_as_triggered();
+
 private:
     Ui::MW *ui;
-    QString currentFile = "";
+
 };
 #endif  //MW_H

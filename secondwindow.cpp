@@ -24,5 +24,6 @@ void SecondWindow::on_Inverse_btn_clicked()
     else if(mode==1){
         bmp->ToMonochrome({ui->X1->text().toInt(),ui->Y1->text().toInt()},{ui->X2->text().toInt(),ui->Y2->text().toInt()});
     }
+    bmp->setFilename("out.bmp");
     this->close();
 }

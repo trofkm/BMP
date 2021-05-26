@@ -51,15 +51,15 @@ class Bitmap : public MyPicture
         BitmapInfoHeader bih;
     } Bmp;
     Bmp picture;
-    //PixelTable *tbl;
     std::unique_ptr<PixelTable> tbl;
 
 public:
     Bitmap(std::string name);
     ~Bitmap();
-    unsigned int H();
-    unsigned int W();
-    std::string getFilename();
+    unsigned int H()const;
+    unsigned int W()const;
+    std::string getFilename()const;
+    void setFilename(std::string);
     void ToMonochrome(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp") override;
     void InverseColors(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp") override;
     void DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, int count = 1, std::string nameTo = "out.bmp")override;
