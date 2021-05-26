@@ -191,7 +191,7 @@ void Bitmap::DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb colo
         }
     }
 }
-void Bitmap::IncreaseImage(int mode, std::string nameTo)
+void Bitmap::DecreaseImage(int mode, std::string nameTo)
 {
     FILE *to = fopen(nameTo.c_str(), "wb");
     if (mode == 1)
@@ -373,6 +373,20 @@ void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some e
     }
     fclose(to);
 }
+
+void Bitmap::SaveImage(std::string savePath){
+    FILE *to = fopen(savePath.c_str(), "wb");
+    fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+    fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+    unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+    for (size_t i = 0; i < this->picture.bih.height; ++i)
+    {
+        fwrite((*tbl)[i], 1, w, to);
+    }
+    fclose(to);
+}
+
+
 std::unique_ptr<Bitmap>bmp;
 int mode;
 Rgb color;

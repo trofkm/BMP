@@ -16,7 +16,7 @@ void ChangeImage::on_leftDown_btn_clicked()
 {
     bmp->setFilename("out.bmp");
     if (mode==0){
-        bmp->IncreaseImage(1);
+        bmp->DecreaseImage(1);
         this->close();
     }
     else{
@@ -34,7 +34,7 @@ void ChangeImage::on_LeftUp_btn_clicked()
 {
     bmp->setFilename("out.bmp");
     if (mode==0){
-        bmp->IncreaseImage(2);
+        bmp->DecreaseImage(2);
         this->close();
     }
     else{
@@ -54,7 +54,7 @@ void ChangeImage::on_RightUp_btn_clicked()
 {
     bmp->setFilename("out.bmp");
     if (mode==0){
-        bmp->IncreaseImage(3);
+        bmp->DecreaseImage(3);
         this->close();
     }
     else{
@@ -72,7 +72,7 @@ void ChangeImage::on_RightDown_btn_clicked()
 {
     bmp->setFilename("out.bmp");
     if (mode==0){
-        bmp->IncreaseImage(4);
+        bmp->DecreaseImage(4);
         this->close();
     }
     else{
@@ -90,7 +90,7 @@ void ChangeImage::on_Center_clicked()
 {
     bmp->setFilename("out.bmp");
     if (mode==0){
-        bmp->IncreaseImage(5);
+        bmp->DecreaseImage(5);
         this->close();
     }
     else{

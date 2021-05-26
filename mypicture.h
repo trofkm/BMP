@@ -14,7 +14,7 @@ public:
     virtual void DrawVector(std::pair<int, int>, std::pair<int, int> , Rgb , int  = 1, std::string  = "out.bmp") {}
     virtual void DrawLine(std::pair<int, int> , std::pair<int, int> , Rgb , std::string  = "out.bmp") {}
     virtual void InverseColors(std::pair<int, int> , std::pair<int, int> , std::string  = "out.bmp") {}
-    virtual void IncreaseImage(int , std::string ="out.bmp"){}
+    virtual void DecreaseImage(int , std::string ="out.bmp"){}
     virtual void AddBackground(Rgb , int , std::string ="out.bmp"){}
 };
 
@@ -64,8 +64,9 @@ public:
     void InverseColors(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp") override;
     void DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, int count = 1, std::string nameTo = "out.bmp")override;
     void DrawLine(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, std::string nameTo = "out.bmp")override;
-    void IncreaseImage(int mode, std::string nameTo="out.bmp")override;
+    void DecreaseImage(int mode, std::string nameTo="out.bmp")override;
     void AddBackground(Rgb color, int mode, std::string nameTo="out.bmp")override;
+    void SaveImage(std::string);
 
 };
 
