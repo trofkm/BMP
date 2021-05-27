@@ -191,101 +191,106 @@ void Bitmap::DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb colo
         }
     }
 }
-void Bitmap::DecreaseImage(int mode, std::string nameTo)
+void Bitmap::CutImage(int mode, std::string nameTo)
 {
     FILE *to = fopen(nameTo.c_str(), "wb");
+    auto Smalltbl =std::make_unique<PixelTable>(picture.bih.height/2, picture.bih.width/2);
+    fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+
     if (mode == 1)
     {
-        picture.bih.width = picture.bih.width / 2;
-        picture.bih.height = picture.bih.height / 2;
-        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
-        fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-        for (size_t i = 0; i < picture.bih.height; ++i)
-        {
-            fwrite((*tbl)[i], 1, w, to);
+        picture.bih.width = picture.bih.width/2;
+        picture.bih.height = picture.bih.height/2;
+        for(size_t y = 0;y<picture.bih.height;++y){
+            for(size_t x = 0;x<picture.bih.width;++x){
+                (*Smalltbl)[y][x] = (*tbl)[y][x];
+            }
         }
-        fclose(to);
+
+        tbl = std::move(Smalltbl);
+
+
+        fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+
+
     }
     else if (mode == 2)
     {
-        unsigned int heighUntil = this->picture.bih.height;
-        this->picture.bih.width = this->picture.bih.width / 2;
-        this->picture.bih.height = this->picture.bih.height / 2;
-        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
-        fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-        for (size_t i = this->picture.bih.height; i < heighUntil; ++i)
-        {
-            fwrite((*tbl)[i], 1, w, to);
+        unsigned int heighUntil = picture.bih.height-picture.bih.height%2;
+        picture.bih.width = picture.bih.width / 2;
+        picture.bih.height = picture.bih.height / 2;
+
+        for(size_t y = picture.bih.height;y<heighUntil;++y){
+            for(size_t x = 0;x<picture.bih.width;++x){
+                (*Smalltbl)[y-picture.bih.height][x] = (*tbl)[y][x];
+            }
         }
-        fclose(to);
+        tbl = std::move(Smalltbl);
+        fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+
+
     }
     else if (mode == 3)
     {
-        unsigned int heighUntil = this->picture.bih.height;
-        this->picture.bih.width = this->picture.bih.width / 2;
-        this->picture.bih.height = this->picture.bih.height / 2;
-        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+        unsigned int heighUntil = picture.bih.height-picture.bih.height%2;
+        picture.bih.width = picture.bih.width / 2;
+        picture.bih.height = picture.bih.height / 2;
+
         fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-        for (size_t y = this->picture.bih.height; y < heighUntil; ++y)
+
+        for (size_t y = picture.bih.height; y < heighUntil; ++y)
         {
             for (size_t i = 0; i < this->picture.bih.width; ++i)
             {
-                (*tbl)[y][i] = (*tbl)[y][i + this->picture.bih.width];
+                (*Smalltbl)[y-picture.bih.height][i] = (*tbl)[y][i + this->picture.bih.width];
             }
         }
+        tbl = std::move(Smalltbl);
 
-        for (size_t i = this->picture.bih.height; i < heighUntil; ++i)
-        {
-            fwrite((*tbl)[i], 1, w, to);
-        }
-        fclose(to);
     }
     else if (mode == 4)
     {
-        this->picture.bih.width = this->picture.bih.width / 2;
-        this->picture.bih.height = this->picture.bih.height / 2;
-        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+        picture.bih.width = picture.bih.width / 2;
+        picture.bih.height = picture.bih.height / 2;
+
         fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-        for (size_t y = 0; y < this->picture.bih.height; ++y)
+
+        for (size_t y = 0; y < picture.bih.height; ++y)
         {
-            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            for (size_t i = 0; i < picture.bih.width; ++i)
             {
-                (*tbl)[y][i] = (*tbl)[y][i + this->picture.bih.width];
+                (*Smalltbl)[y][i] = (*tbl)[y][i + picture.bih.width];
             }
         }
+        tbl = std::move(Smalltbl);
 
-        for (size_t i = 0; i < this->picture.bih.height; ++i)
-        {
-            fwrite((*tbl)[i], 1, w, to);
-        }
-        fclose(to);
     }
     else if (mode == 5)
     {
         //unsigned int heighUntil = this->picture.bih.height;
-        this->picture.bih.width = this->picture.bih.width / 2;
-        this->picture.bih.height = this->picture.bih.height / 2;
-        fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+        picture.bih.width = picture.bih.width / 2;
+        picture.bih.height = picture.bih.height / 2;
+
         fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-        unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-        for (size_t y = this->picture.bih.height / 2; y < (this->picture.bih.height + this->picture.bih.height / 2); ++y)
+        for (size_t y = picture.bih.height / 2; y < (picture.bih.height + picture.bih.height / 2); ++y)
         {
-            for (size_t i = 0; i < (this->picture.bih.width + this->picture.bih.width / 2); ++i)
+            for (size_t i = picture.bih.width / 2; i < (picture.bih.width + picture.bih.width / 2); ++i)
             {
-                (*tbl)[y][i] = (*tbl)[y][i + this->picture.bih.width / 2];
+                (*Smalltbl)[y-picture.bih.height / 2][i-picture.bih.width / 2] = (*tbl)[y][i];
             }
         }
 
-        for (size_t i = this->picture.bih.height / 2; i < (this->picture.bih.height + this->picture.bih.height / 2); ++i)
-        {
-            fwrite((*tbl)[i], 1, w, to);
-        }
-        fclose(to);
+        tbl = std::move(Smalltbl);
+
     }
+
+    unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+    for (size_t i = 0; i < picture.bih.height; ++i)
+    {
+        fwrite((*tbl)[i], 1, w, to);
+    }
+    fclose(to);
+    //bmp->AddBackground({255,255,255},5);
 }
 void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some errors when using this function more then once
 {
