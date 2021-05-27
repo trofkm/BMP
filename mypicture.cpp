@@ -196,8 +196,8 @@ void Bitmap::DecreaseImage(int mode, std::string nameTo)
     FILE *to = fopen(nameTo.c_str(), "wb");
     if (mode == 1)
     {
-        this->picture.bih.width = this->picture.bih.width / 2;
-        this->picture.bih.height = this->picture.bih.height / 2;
+        picture.bih.width = picture.bih.width / 2;
+        picture.bih.height = picture.bih.height / 2;
         fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
         fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
         unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
@@ -290,20 +290,20 @@ void Bitmap::DecreaseImage(int mode, std::string nameTo)
 void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some errors when using this function more then once
 {
     FILE *to = fopen(nameTo.c_str(), "wb");
-    this->picture.bih.width = this->picture.bih.width * 2;
-    this->picture.bih.height = this->picture.bih.height * 2;
+    picture.bih.width = picture.bih.width * 2;
+    picture.bih.height = picture.bih.height * 2;
     fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
     fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-    auto Bigtbl = std::make_unique<PixelTable>(this->picture.bih.height, this->picture.bih.width);
+    auto Bigtbl = std::make_unique<PixelTable>(picture.bih.height, picture.bih.width);
     unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
     if (mode == 5)
     {
-        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        for (size_t y = 0; y < picture.bih.height; ++y)
         {
-            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            for (size_t i = 0; i < picture.bih.width; ++i)
             {
 
-                if (y >= this->picture.bih.height / 4 && i >= this->picture.bih.width / 4 && y < this->picture.bih.height / 4 + this->picture.bih.height / 2 && i < this->picture.bih.width / 2 + this->picture.bih.width / 4)
+                if (y >= picture.bih.height / 4 && i >= picture.bih.width / 4 && y <picture.bih.height / 4 + picture.bih.height / 2 && i < picture.bih.width / 2 + picture.bih.width / 4)
                     (*Bigtbl)[y][i] = (*tbl)[y - (int)picture.bih.height / 4][i - picture.bih.width / 4];
                 else
                     (*Bigtbl)[y][i] = color;
@@ -312,12 +312,12 @@ void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some e
     }
     else if (mode == 1)
     {
-        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        for (size_t y = 0; y < picture.bih.height; ++y)
         {
-            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            for (size_t i = 0; i < picture.bih.width; ++i)
             {
 
-                if (y < this->picture.bih.height / 2 && i < this->picture.bih.width / 2)
+                if (y < picture.bih.height / 2 && i < picture.bih.width / 2)
                     (*Bigtbl)[y][i] = (*tbl)[y][i];
                 else
                     (*Bigtbl)[y][i] = color;
@@ -326,13 +326,13 @@ void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some e
     }
     else if (mode == 2)
     {
-        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        for (size_t y = 0; y < picture.bih.height; ++y)
         {
-            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            for (size_t i = 0; i < picture.bih.width; ++i)
             {
 
-                if (y >= this->picture.bih.height / 2 && i < this->picture.bih.width / 2)
-                    (*Bigtbl)[y][i] = (*tbl)[y - this->picture.bih.height / 2][i];
+                if (y >= picture.bih.height / 2 && i < picture.bih.width / 2)
+                    (*Bigtbl)[y][i] = (*tbl)[y - picture.bih.height / 2][i];
                 else
                     (*Bigtbl)[y][i] = color;
             }
@@ -340,13 +340,13 @@ void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some e
     }
     else if (mode == 3)
     {
-        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        for (size_t y = 0; y < picture.bih.height; ++y)
         {
-            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            for (size_t i = 0; i < picture.bih.width; ++i)
             {
 
-                if (y >= this->picture.bih.height / 2 && i >= this->picture.bih.width / 2)
-                    (*Bigtbl)[y][i] = (*tbl)[y - this->picture.bih.height / 2][i - this->picture.bih.width / 2];
+                if (y >= picture.bih.height / 2 && i >= picture.bih.width / 2)
+                    (*Bigtbl)[y][i] = (*tbl)[y - picture.bih.height / 2][i - picture.bih.width / 2];
                 else
                     (*Bigtbl)[y][i] = color;
             }
@@ -354,12 +354,12 @@ void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some e
     }
     else if (mode == 4)
     {
-        for (size_t y = 0; y < this->picture.bih.height; ++y)
+        for (size_t y = 0; y < picture.bih.height; ++y)
         {
-            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            for (size_t i = 0; i < picture.bih.width; ++i)
             {
 
-                if (i >= this->picture.bih.width / 2 && y < this->picture.bih.height / 2 )
+                if (i >= picture.bih.width / 2 && y < picture.bih.height / 2 )
                     (*Bigtbl)[y][i] = (*tbl)[y ][i - picture.bih.width / 2];
                 else
                     (*Bigtbl)[y][i] = color;
@@ -367,9 +367,10 @@ void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some e
         }
     }
 
-    for (size_t i = 0; i < this->picture.bih.height; ++i)
+    tbl = std::move(Bigtbl);
+    for (size_t i = 0; i < picture.bih.height; ++i)
     {
-        fwrite((*Bigtbl)[i], 1, w, to);
+        fwrite((*tbl)[i], 1, w, to);
     }
     fclose(to);
 }
@@ -379,7 +380,7 @@ void Bitmap::SaveImage(std::string savePath){
     fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
     fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
     unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-    for (size_t i = 0; i < this->picture.bih.height; ++i)
+    for (size_t i = 0; i < picture.bih.height; ++i)
     {
         fwrite((*tbl)[i], 1, w, to);
     }

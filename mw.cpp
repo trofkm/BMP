@@ -42,7 +42,7 @@ void MW::on_InverseColors_Btn_clicked()
     {
         mode = 0;
         SecondWindow window;
-        window.setResolution(QString::number(bmp->W())+"x"+QString::number(bmp->H()));
+        window.setResolution("Image size: " +QString::number(bmp->W())+"x"+QString::number(bmp->H()));
         window.setModal(true);
         window.exec();
 
@@ -60,7 +60,7 @@ void MW::on_ToMonochrome_btn_clicked()
     {
         mode = 1;
         SecondWindow window;
-        window.setResolution(QString::number(bmp->W())+"x"+QString::number(bmp->H()));
+        window.setResolution("Image size: " + QString::number(bmp->W())+"x"+QString::number(bmp->H()));
         window.setModal(true);
         window.exec();
 
@@ -77,7 +77,7 @@ void MW::on_Vector_Btn_clicked()
     if (opened)
     {
         VectorWindow window;
-        window.setResolution(QString::number(bmp->W())+"x"+QString::number(bmp->H()));
+        window.setResolution("Image size: " +QString::number(bmp->W())+"x"+QString::number(bmp->H()));
         window.setModal(true);
         window.exec();
 
@@ -97,6 +97,7 @@ void MW::on_CutImage_btn_clicked()
         mode = 0;
         ChangeImage window;
         window.setModal(true);
+        window.setWindowTitle("Cut image");
         window.exec();
 
         QImage image(QString::fromStdString(bmp->getFilename()));
@@ -115,6 +116,7 @@ void MW::on_IncreaseImage_btn_clicked()
         mode = 1;
         ChangeImage window;
         window.setModal(true);
+        window.setWindowTitle("Add background");
         window.exec();
 
         QImage image(QString::fromStdString(bmp->getFilename()));
