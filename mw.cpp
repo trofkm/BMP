@@ -2,7 +2,7 @@
 #include "ui_mw.h"
 
 bool opened = false;
-
+bool backgroundChanged = true;
 MW::MW(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MW)
@@ -92,7 +92,7 @@ void MW::on_Vector_Btn_clicked()
 
 void MW::on_CutImage_btn_clicked()
 {
-    if (opened)
+    if (opened&&backgroundChanged)
     {
         mode = 0;
         ChangeImage window;
@@ -105,6 +105,7 @@ void MW::on_CutImage_btn_clicked()
         scene->addPixmap(QPixmap::fromImage(image));
         ui->PictureView->setScene(scene);
         ui->PictureView->show();
+        backgroundChanged=false;
     }
 
 }
@@ -113,6 +114,7 @@ void MW::on_IncreaseImage_btn_clicked()
 {
     if (opened)
     {
+        backgroundChanged = true;
         mode = 1;
         ChangeImage window;
         window.setModal(true);
