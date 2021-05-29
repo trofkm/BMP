@@ -91,7 +91,6 @@ void ChangeImage::on_Center_clicked()
     bmp->setFilename("out.bmp");
     if (mode==0){
         bmp->CutImage(5);
-        this->close();
     }
     else{
         QColor clr = QColorDialog::getColor();
@@ -100,7 +99,6 @@ void ChangeImage::on_Center_clicked()
         BackgroundColor.g = clr.green();
         BackgroundColor.b = clr.blue();
         bmp->AddBackground(BackgroundColor,5);
-
-        this->close();
     }
+    this->close();
 }

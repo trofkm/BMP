@@ -1,12 +1,8 @@
 #include "mypicture.h"
 
-MyPicture::MyPicture(std::string name_) : pathFrom(name_)
-{
-}
 
 
-
-Bitmap::Bitmap(std::string name) : MyPicture(name)
+Bitmap::Bitmap(std::string name) : pathFrom(name)
 {
     FILE *from = fopen(pathFrom.c_str(), "rb");
     fread(&picture.bfh, 1, sizeof(BitmapFileHeader), from);
@@ -119,11 +115,11 @@ void Bitmap::DrawLine(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color,
     const int signX = x1 < x2 ? 1 : -1;
     const int signY = y1 < y2 ? 1 : -1;
     int error = deltaX - deltaY;
-    if (y2 >= 0 && y2 < this->picture.bih.height && x2 >= 0 && x2 < this->picture.bih.width)
+    if (y2 >= 0 && y2 < picture.bih.height && x2 >= 0 && x2 < picture.bih.width)
         (*tbl)[y2][x2] = color;
     while (x1 != x2 || y1 != y2)
     {
-        if (y1 >= 0 && y1 < this->picture.bih.height && x1 >= 0 && x1 < this->picture.bih.width)
+        if (y1 >= 0 && y1 < picture.bih.height && x1 >= 0 && x1 < picture.bih.width)
             (*tbl)[y1][x1] = color;
         int error2 = error * 2;
         if (error2 > -deltaY)
@@ -207,8 +203,6 @@ void Bitmap::CutImage(int mode, std::string nameTo)
             }
         }
 
-        tbl = std::move(Smalltbl);
-
 
         fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
 
@@ -225,7 +219,6 @@ void Bitmap::CutImage(int mode, std::string nameTo)
                 (*Smalltbl)[y-picture.bih.height][x] = (*tbl)[y][x];
             }
         }
-        tbl = std::move(Smalltbl);
         fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
 
 
@@ -240,12 +233,11 @@ void Bitmap::CutImage(int mode, std::string nameTo)
 
         for (size_t y = picture.bih.height; y < heighUntil; ++y)
         {
-            for (size_t i = 0; i < this->picture.bih.width; ++i)
+            for (size_t i = 0; i < picture.bih.width; ++i)
             {
-                (*Smalltbl)[y-picture.bih.height][i] = (*tbl)[y][i + this->picture.bih.width];
+                (*Smalltbl)[y-picture.bih.height][i] = (*tbl)[y][i + picture.bih.width];
             }
         }
-        tbl = std::move(Smalltbl);
 
     }
     else if (mode == 4)
@@ -262,12 +254,10 @@ void Bitmap::CutImage(int mode, std::string nameTo)
                 (*Smalltbl)[y][i] = (*tbl)[y][i + picture.bih.width];
             }
         }
-        tbl = std::move(Smalltbl);
 
     }
     else if (mode == 5)
     {
-        //unsigned int heighUntil = this->picture.bih.height;
         picture.bih.width = picture.bih.width / 2;
         picture.bih.height = picture.bih.height / 2;
 
@@ -280,17 +270,16 @@ void Bitmap::CutImage(int mode, std::string nameTo)
             }
         }
 
-        tbl = std::move(Smalltbl);
+
 
     }
-
+    tbl = std::move(Smalltbl);
     unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
     for (size_t i = 0; i < picture.bih.height; ++i)
     {
         fwrite((*tbl)[i], 1, w, to);
     }
     fclose(to);
-    //bmp->AddBackground({255,255,255},5);
 }
 void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some errors when using this function more then once
 {

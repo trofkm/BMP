@@ -3,23 +3,10 @@
 
 #include <pixeltable.h>
 
-class MyPicture
-{
-protected:
-    std::string pathFrom;
-
-public:
-    MyPicture(std::string name_);
-    virtual void ToMonochrome(std::pair<int, int> , std::pair<int, int> , std::string  = "out.bmp") {}
-    virtual void DrawVector(std::pair<int, int>, std::pair<int, int> , Rgb , int  = 1, std::string  = "out.bmp") {}
-    virtual void DrawLine(std::pair<int, int> , std::pair<int, int> , Rgb , std::string  = "out.bmp") {}
-    virtual void InverseColors(std::pair<int, int> , std::pair<int, int> , std::string  = "out.bmp") {}
-    virtual void CutImage(int , std::string ="out.bmp"){}
-    virtual void AddBackground(Rgb , int , std::string ="out.bmp"){}
-};
 
 
-class Bitmap : public MyPicture
+
+class Bitmap
 {
 #pragma pack(push, 1)
     typedef struct
@@ -52,7 +39,7 @@ class Bitmap : public MyPicture
     } Bmp;
     Bmp picture;
     std::unique_ptr<PixelTable> tbl;
-
+    std::string pathFrom;
 public:
     Bitmap(std::string name);
     ~Bitmap();
@@ -60,12 +47,12 @@ public:
     unsigned int W()const;
     std::string getFilename()const;
     void setFilename(std::string);
-    void ToMonochrome(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp") override;
-    void InverseColors(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp") override;
-    void DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, int count = 1, std::string nameTo = "out.bmp")override;
-    void DrawLine(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, std::string nameTo = "out.bmp")override;
-    void CutImage(int mode, std::string nameTo="out.bmp")override;
-    void AddBackground(Rgb color, int mode, std::string nameTo="out.bmp")override;
+    void ToMonochrome(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp");
+    void InverseColors(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo = "out.bmp");
+    void DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, int count = 1, std::string nameTo = "out.bmp");
+    void DrawLine(std::pair<int, int> p1, std::pair<int, int> p2, Rgb color, std::string nameTo = "out.bmp");
+    void CutImage(int mode, std::string nameTo="out.bmp");
+    void AddBackground(Rgb color, int mode, std::string nameTo="out.bmp");
     void SaveImage(std::string);
 
 };

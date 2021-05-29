@@ -23,7 +23,7 @@ void SecondWindow::on_Inverse_btn_clicked()
     int x2 = ui->X2->text().toInt();
     int y1 = ui->Y1->text().toInt();
     int y2 = ui->Y2->text().toInt();
-    if(x1<0||x1>bmp->W()||x2<0||x2>bmp->W()||y1<0||y1>bmp->H()||y2<0||y2>bmp->H())//Don't touch this warnings because only this variant working correct
+    if(x1<0||x1>bmp->W()||x2<0||x2>bmp->W()||y1<0||y1>bmp->H()||y2<0||y2>bmp->H())//Don't touch this warnings because only this variant works correct
     {
        QMessageBox::warning(this,"Warning","Values are not correct");
     }
