@@ -42,6 +42,10 @@ private slots:
 
     void on_actionSave_as_triggered();
 
+    void on_courseDef_btn_clicked();
+
+    void on_CutArea_btn_clicked();
+
 private:
     Ui::MW *ui;
 

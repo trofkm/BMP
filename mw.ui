@@ -55,9 +55,23 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="CutArea_btn">
+        <property name="text">
+         <string>Cut area</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="IncreaseImage_btn">
         <property name="text">
          <string>Increase Image</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="courseDef_btn">
+        <property name="text">
+         <string>Defence</string>
         </property>
        </widget>
       </item>

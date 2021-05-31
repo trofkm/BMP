@@ -34,6 +34,9 @@ void SecondWindow::on_Inverse_btn_clicked()
         else if(mode==1){
             bmp->ToMonochrome({x1,y1},{x2,y2});
         }
+        else if (mode==10){
+            bmp->CutArea({x1,y1},{x2,y2});
+        }
         bmp->setFilename("out.bmp");
         this->close();
 

@@ -191,6 +191,13 @@ void Bitmap::CutImage(int mode, std::string nameTo)
 {
     FILE *to = fopen(nameTo.c_str(), "wb");
     auto Smalltbl =std::make_unique<PixelTable>(picture.bih.height/2, picture.bih.width/2);
+    for(size_t i = 0;i<picture.bih.height/2;++i){
+        for(size_t k = 0;k<picture.bih.width/2;++k){
+            (*Smalltbl)[i][k].r = 255;
+            (*Smalltbl)[i][k].g = 255;
+            (*Smalltbl)[i][k].b = 255;
+        }
+    }
     fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
 
     if (mode == 1)
@@ -380,6 +387,101 @@ void Bitmap::SaveImage(std::string savePath){
     }
     fclose(to);
 }
+bool checkWhite(Rgb pixelColor){
+    return(pixelColor.r == 255&&pixelColor.g == 255&&pixelColor.b >=228);
+}
+void Bitmap::SearchWhiteArea(std::string nameTo){
+    FILE *to = fopen(nameTo.c_str(), "wb");
+    fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+    fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+    Rgb black = {0,0,0};
+    int xFirstPixel = 0;
+    int xLastPixel = W()-1;
+
+    int yFirstPixel = 0;
+    int yLastPixel = H()-1;
+
+    unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+
+    for (int y = yFirstPixel; y < yLastPixel + 1; ++y)
+    {
+
+        for (int x = xFirstPixel; x < xLastPixel + 1; ++x)
+        {
+            if(checkWhite((*tbl)[y][x]))
+            {
+                if(x+1<W()&&!checkWhite((*tbl)[y][x+1]))
+                    (*tbl)[y][x+1] = black;
+                if(x-1>=0&&!checkWhite((*tbl)[y][x-1]))
+                    (*tbl)[y][x-1] = black;
+                if(y-1>=0&&!checkWhite((*tbl)[y-1][x]))
+                    (*tbl)[y-1][x] = black;
+                if(y+1<H()&&!checkWhite((*tbl)[y+1][x]))
+                    (*tbl)[y+1][x] = black;
+                if(x-1>=0&&y-1>=0&&!checkWhite((*tbl)[y-1][x-1]))
+                    (*tbl)[y-1][x-1] = black;
+                if(x-1>=0&&y+1<H()&&!checkWhite((*tbl)[y+1][x-1]))
+                    (*tbl)[y+1][x-1] = black;
+                if(x+1<W()&&y-1>=0&&!checkWhite((*tbl)[y-1][x+1]))
+                    (*tbl)[y-1][x+1] = black;
+                if(x+1<W()&&y+1<H()&&!checkWhite((*tbl)[y+1][x+1]))
+                    (*tbl)[y+1][x+1] = black;
+            }
+
+        }
+    }
+    for (size_t i = 0; i < picture.bih.height; ++i)
+    {
+        fwrite((*tbl)[i], 1, w, to);
+    }
+    fclose(to);
+    bmp->setFilename(nameTo);
+}
+
+
+void Bitmap::CutArea(std::pair<int, int>p1, std::pair<int, int>p2, std::string nameTo)
+{
+    FILE *to = fopen(nameTo.c_str(), "wb");
+    fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
+
+
+
+    int xFirstPixel = std::min(p1.first, p2.first);
+    int xLastPixel = std::max(p1.first, p2.first);
+
+    int yFirstPixel = std::min(p1.second, p2.second);
+    int yLastPixel = std::max(p1.second, p2.second);
+    picture.bih.height = abs(yLastPixel-yFirstPixel)+1;
+    picture.bih.width = abs(xLastPixel-xFirstPixel)+1;
+    fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
+    unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
+    auto Bigtbl = std::make_unique<PixelTable>(picture.bih.height, picture.bih.width);
+    for(int i = 0;i<picture.bih.height;++i){
+        for(int k = 0;k<picture.bih.width;++k){
+            (*Bigtbl)[i][k].r = 255;
+            (*Bigtbl)[i][k].g = 255;
+            (*Bigtbl)[i][k].b = 255;
+        }
+    }
+    for (int i = xFirstPixel; i < xLastPixel ; ++i)
+    {
+
+        for (int k = yFirstPixel; k < yLastPixel ; ++k)
+        {
+            (*Bigtbl)[k-yFirstPixel][i-xFirstPixel].r = (*tbl)[k][i].r;
+            (*Bigtbl)[k-yFirstPixel][i-xFirstPixel].g = (*tbl)[k][i].g;
+            (*Bigtbl)[k-yFirstPixel][i-xFirstPixel].b = (*tbl)[k][i].b;
+        }
+    }
+    tbl = std::move(Bigtbl);
+    for (size_t i = 0; i < picture.bih.height; ++i)
+    {
+        fwrite((*tbl)[i], 1, w, to);
+    }
+    fclose(to);
+}
+
+
 
 
 std::unique_ptr<Bitmap>bmp;
