@@ -9,7 +9,7 @@ Bitmap::Bitmap(std::string name) : pathFrom(name)
     fread(&picture.bih, 1, sizeof(BitmapInfoHeader), from);
     unsigned int H = picture.bih.height;
     unsigned int W = picture.bih.width;
-    tbl = std::make_unique<PixelTable>(H,W);
+    tbl = std::make_shared<PixelTable>(H,W);
 
     for (size_t i = 0; i < H; ++i)
     {
@@ -33,6 +33,13 @@ std::string Bitmap::getFilename()const{
 
 void Bitmap::setFilename(std::string newPath){
     pathFrom = newPath;
+}
+
+void Bitmap::setPixelTable(std::shared_ptr<PixelTable> otherTable){
+    this->tbl = otherTable;
+}
+std::shared_ptr<PixelTable>Bitmap::getPixelTable(){
+    return tbl;
 }
 
 void Bitmap::ToMonochrome(std::pair<int, int> p1, std::pair<int, int> p2, std::string nameTo)
@@ -190,7 +197,7 @@ void Bitmap::DrawVector(std::pair<int, int> p1, std::pair<int, int> p2, Rgb colo
 void Bitmap::CutImage(int mode, std::string nameTo)
 {
     FILE *to = fopen(nameTo.c_str(), "wb");
-    auto Smalltbl =std::make_unique<PixelTable>(picture.bih.height/2, picture.bih.width/2);
+    auto Smalltbl =std::make_shared<PixelTable>(picture.bih.height/2, picture.bih.width/2);
     for(size_t i = 0;i<picture.bih.height/2;++i){
         for(size_t k = 0;k<picture.bih.width/2;++k){
             (*Smalltbl)[i][k].r = 255;
@@ -295,7 +302,7 @@ void Bitmap::AddBackground(Rgb color, int mode, std::string nameTo)//Have some e
     picture.bih.height = picture.bih.height * 2;
     fwrite(&picture.bfh, 1, sizeof(BitmapFileHeader), to);
     fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
-    auto Bigtbl = std::make_unique<PixelTable>(picture.bih.height, picture.bih.width);
+    auto Bigtbl = std::make_shared<PixelTable>(picture.bih.height, picture.bih.width);
     unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
     if (mode == 5)
     {
@@ -455,9 +462,9 @@ void Bitmap::CutArea(std::pair<int, int>p1, std::pair<int, int>p2, std::string n
     picture.bih.width = abs(xLastPixel-xFirstPixel)+1;
     fwrite(&picture.bih, 1, sizeof(BitmapInfoHeader), to);
     unsigned int w = (picture.bih.width) * sizeof(Rgb) + ((picture.bih.width) * 3) % 4;
-    auto Bigtbl = std::make_unique<PixelTable>(picture.bih.height, picture.bih.width);
-    for(int i = 0;i<picture.bih.height;++i){
-        for(int k = 0;k<picture.bih.width;++k){
+    auto Bigtbl = std::make_shared<PixelTable>(picture.bih.height, picture.bih.width);
+    for(size_t i = 0;i<picture.bih.height;++i){
+        for(size_t k = 0;k<picture.bih.width;++k){
             (*Bigtbl)[i][k].r = 255;
             (*Bigtbl)[i][k].g = 255;
             (*Bigtbl)[i][k].b = 255;
@@ -477,6 +484,69 @@ void Bitmap::CutArea(std::pair<int, int>p1, std::pair<int, int>p2, std::string n
     for (size_t i = 0; i < picture.bih.height; ++i)
     {
         fwrite((*tbl)[i], 1, w, to);
+    }
+    fclose(to);
+}
+
+void Bitmap::MergeImage(std::unique_ptr<Bitmap> otherBmp, std::string nameTo){
+
+    int maxH = 2*std::max(bmp->H(), otherBmp->H());
+    int maxW = 2*std::max(bmp->W(), otherBmp->W());
+
+    auto Bigtbl =std::make_shared<PixelTable>(maxH, maxW);
+    for(int y = 0;y<maxH;++y){
+        for(int x = 0;x<maxW;++x){
+            (*Bigtbl)[y][x] = {255,255,255};
+        }
+    }
+    size_t pixelsCount = 0;
+    size_t x1=0,x2=0,y1=0,y2=0;
+
+    for(int y = 0;y<maxH;++y){
+        for(int x = 0;x<maxW;++x){
+            if(x%2==0&&y%2==0){
+                if(y1<bmp->H()&&x1<bmp->W()){
+                    (*Bigtbl)[y][x] = (*(bmp->tbl))[y1][x1++];
+
+                }
+            }
+            else if(x%2!=0&&y%2==0){
+                if(y2<bmp->H()&&x2<bmp->W()){
+                    (*Bigtbl)[y][x] = (*(otherBmp->tbl))[y2][x2++];
+
+                }
+            }
+            else if((x%2==0&&y%2!=0)){
+                if(y2<bmp->H()&&x2<bmp->W())
+                (*Bigtbl)[y][x] = (*(otherBmp->tbl))[y2][x2++];
+            }
+            else
+            {
+                if(y1<otherBmp->H()&&x1<otherBmp->W())
+                    (*Bigtbl)[y][x] = (*(bmp->tbl))[y1][x1++];
+            }
+           pixelsCount++;
+
+        }
+        x1 = 0;
+        x2 = 0;
+        if(y%2==0)
+            y1++;
+        else
+            y2++;
+    }
+
+    bmp->tbl = std::move(Bigtbl);
+    bmp->picture.bih.height = maxH;
+    bmp->picture.bih.width = maxW;
+    bmp->setFilename(nameTo);
+    FILE *to = fopen(nameTo.c_str(),"wb");
+    fwrite(&bmp->picture.bfh, 1, sizeof(BitmapFileHeader), to);
+    fwrite(&bmp->picture.bih, 1, sizeof(BitmapInfoHeader), to);
+    unsigned int w = (maxW) * sizeof(Rgb) + (maxW * 3) % 4;
+    for (int i = 0; i < maxH; ++i)
+    {
+        fwrite((*(bmp->tbl))[i], 1, w, to);
     }
     fclose(to);
 }

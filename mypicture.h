@@ -37,28 +37,30 @@ class Bitmap
         BitmapFileHeader bfh;
         BitmapInfoHeader bih;
     } Bmp;
-
-
+    std::shared_ptr<PixelTable> tbl;
     std::string pathFrom;
-public:
     Bmp picture;
-    std::unique_ptr<PixelTable> tbl;
+public:
+
+
     Bitmap(std::string name);
     ~Bitmap();
     unsigned int H()const;
     unsigned int W()const;
     std::string getFilename()const;
     void setFilename(std::string);
+    std::shared_ptr<PixelTable> getPixelTable();
+    void setPixelTable(std::shared_ptr<PixelTable>);
     void ToMonochrome(std::pair<int, int>, std::pair<int, int>, std::string = "out.bmp");
     void InverseColors(std::pair<int, int>, std::pair<int, int>, std::string = "out.bmp");
     void DrawVector(std::pair<int, int>, std::pair<int, int>, Rgb, int = 1, std::string = "out.bmp");
     void DrawLine(std::pair<int, int>, std::pair<int, int>, Rgb, std::string = "out.bmp");
-    void CutImage(int , std::string = "out.bmp");
+    void CutImage(int , std::string = "out.bmp");//Doesn't works very good
     void AddBackground(Rgb, int, std::string ="out.bmp");
     void SaveImage(std::string);
     void SearchWhiteArea(std::string = "out.bmp");
-    void CutArea(std::pair<int, int>, std::pair<int, int>, std::string  = "out.bmp");
-
+    void CutArea(std::pair<int, int>, std::pair<int, int>, std::string  = "out.bmp");//Doesn't works very good
+    void MergeImage(std::unique_ptr<Bitmap>, std::string = "out.bmp");
 };
 
 extern std::unique_ptr<Bitmap>bmp;
